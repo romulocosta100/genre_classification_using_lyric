@@ -4,7 +4,7 @@
 # In[1]:
 
 
-import nbimporter
+#import nbimporter
 from keras.engine.topology import Layer
 from keras import initializers as initializers, regularizers, constraints
 from keras import backend as K
@@ -38,13 +38,9 @@ df_dev = pd.read_csv("Dataset/vagalume.dev.csv")
 df_test = pd.read_csv("Dataset/vagalume.test.csv")
 
 
-# In[3]:
-
-
-df_train = df_train.head()
-df_dev = df_dev.head()
-df_test = df_test.head()
-
+#df_train = df_train.head()
+#df_dev = df_dev.head()
+#df_test = df_test.head()
 
 # # Preprocess Data
 
@@ -82,7 +78,7 @@ def get_X_Y(dataframe):
 
 
 X_train,Y_train = get_X_Y(df_train)
-X_dev,Y_dev = get_X_Y(df_train)
+X_dev,Y_dev = get_X_Y(df_dev)
 X_test,Y_test = get_X_Y(df_test)
 
 
@@ -91,7 +87,7 @@ X_test,Y_test = get_X_Y(df_test)
 # In[6]:
 
 
-model_word2vec = KeyedVectors.load_word2vec_format("/home/romulo/PUC/Pesquisa/Music Genre Classification/word_embeddings/wang2vec/cbow_s100.txt", unicode_errors="ignore")
+model_word2vec = KeyedVectors.load_word2vec_format("/home/dslab/deep_learning_nlp/NER_RE/Word Embeddings/Wang2Vec/cbow_s100.txt", unicode_errors="ignore")
 
 
 # In[7]:
@@ -218,7 +214,7 @@ model.summary()
 # In[22]:
 
 
-history = model.fit(X_word_tr, y_train,validation_data=( X_word_dv, y_dev ), epochs=1, verbose=1)
+history = model.fit(X_word_tr, y_train,validation_data=( X_word_dv, y_dev ), epochs=20, verbose=1)
 
 
 # In[32]:
@@ -234,7 +230,7 @@ ys_pred_test = model.predict(X_word_te)
 def classification_report_csv(report):
     report_data = []
     lines = report.split('\n')
-    for line in lines[2:-3]:
+    for line in lines[2:-5]:
         line = line.strip()
         line = re.sub(" +"," ",line)
         
@@ -261,7 +257,7 @@ def evaluate(y_true,y_pred,set_name):
         tags_true.append(idx2tag[tag_test])
         
     
-    report = classification_report(tags_test, tags_pred)
+    report = classification_report(tags_true, tags_pred)
     print(report)
     
     df_report = classification_report_csv(report)
